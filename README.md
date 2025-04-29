@@ -1,239 +1,122 @@
-<<<<<<< HEAD
-# 🎚️ Procesamiento de Audio con Filtros Digitales
+# 🚗 Detección y Seguimiento de Vehículos con YOLOv8 + Deep SORT
 
-**Interfaces de Hardware y Software — Proyecto de Interfaz HMI en Streamlit**
-
----
-
-## 📄 Descripción
-
-Este proyecto implementa un sistema de **procesamiento de señales de audio** mediante filtros digitales (pasa bajas, pasa altas y pasa banda).
-La interfaz gráfica fue desarrollada con **Streamlit** y permite:
-
-- Cargar archivos de audio `.wav`, `.mp3`, `.aac`
-- Aplicar filtros digitales configurables
-- Visualizar el audio en el **dominio del tiempo** y en el **dominio de la frecuencia (FFT)**
-- Exportar el resultado en diferentes formatos
+Aplicación de **Streamlit** para la detección y seguimiento de vehículos en video usando **YOLOv8** y **Deep SORT**.  
+Permite cargar un video, seleccionar la clase a rastrear, visualizar las detecciones en tiempo real y descargar el video procesado.
 
 ---
 
-## ⚙️ Requisitos
+## 📋 Requisitos
 
-- Python 3.10 instalado
+- Python >= 3.8
+- pip (actualizado)
+- Git (opcional, si quieres clonar repositorio)
 
-### Instalación de dependencias:
+---
+
+## ⚙️ Instalación
+
+### 1. Crear y activar un entorno virtual
 
 ```bash
-pip install streamlit numpy matplotlib scipy soundfile pydub
+# Crear un entorno virtual
+python3 -m venv venv
+
+# Activar el entorno virtual
+# En Linux/Mac
+source venv/bin/activate
+
+# En Windows
+venv\Scripts\activate
 ```
 
 ---
 
-## 🧠 Estructura del Código
+### 2. Actualizar pip
 
-Archivo principal: `app.py`
-
-| Función | Descripción |
-|--------|-------------|
-| `leer_audio_general(file)` | Carga audio `.wav`, `.mp3`, `.aac` y lo convierte a array numpy mono |
-| `aplicar_filtro(data, fs, tipo, fc_low, fc_high, orden)` | Aplica filtro digital Butterworth según parámetros |
-| `aplicar_fft(data, fs)` | Calcula la FFT para visualización del espectro |
-| `st.line_chart()` | Muestra forma de onda |
-| `st.pyplot()` | Muestra el espectro de frecuencias |
-| `sf.write()` | Guarda audio filtrado |
-| `AudioSegment.export()` | Exporta en formato `.mp3`, `.aac` o `.wav` |
+```bash
+pip install --upgrade pip
+```
 
 ---
 
-## 🧪 Instrucciones de Uso
+### 3. Instalar las dependencias
 
-### Paso 1️⃣: Cargar audio
+```bash
+pip install streamlit opencv-python torch torchvision torchaudio ultralytics deep_sort_realtime
+```
 
-- Selecciona un archivo de audio en formato `.wav`, `.mp3`, o `.aac`.
-- Se mostrará la forma de onda del audio cargado.
-
-![Paso 1 - Cargar audio](assets/Screenshot_cargar_audio.png)
-
----
-
-### Paso 2️⃣: Aplicar filtro
-
-- Elige un tipo de filtro:
-  - `Pasa-bajas`
-  - `Pasa-altas`
-  - `Pasa-banda`
-- Ajusta:
-  - Orden del filtro
-  - Frecuencia(s) de corte
-- Presiona **Aplicar filtro** para procesar el audio.
-
-![Paso 2 - Aplicar filtro](assets/Screenshot_aplicar_filtro.png)
+> **Nota:**  
+> - `ultralytics` instala YOLOv8.  
+> - `deep_sort_realtime` instala el rastreador DeepSORT.
 
 ---
 
-### 🔉 Visualización de Audio Filtrado
+## 📁 Organización esperada
 
-- Se reproducen el audio original y el filtrado.
-- Se visualizan ambas formas de onda para comparar.
+Debes tener el modelo YOLOv8 entrenado (`best.pt`) en la ruta correcta, por ejemplo:
 
-![Audio Filtrado - Formas de onda](assets/Screenshot_audio_filtrado.png)
+```bash
+/home/usuario/mi_yolo_ikomia/proyecto_seguimiento_autos/modelo_100/best.pt
+```
 
----
+O bien modifica en el código esta línea para apuntar a tu propio modelo:
 
-### Paso 3️⃣: Transformada de Fourier (FFT)
-
-- Presiona el botón **Aplicar FFT**.
-- Se comparan los espectros de frecuencia (FFT) del audio original y filtrado.
-
-![Paso 3 - FFT](assets/Screenshot_fft.png)
+```python
+model = YOLO('/ruta/a/tu/modelo/best.pt')
+```
 
 ---
 
-### 💾 Guardar Resultado
+## 🚀 Ejecución del proyecto
 
-- Selecciona el formato de exportación (`.wav`, `.mp3`, `.aac`).
-- Presiona el botón **Guardar Resultado**.
-- Finalmente, haz clic en **⬇️ Descargar archivo**.
-
-![Guardar Resultado](assets/Screenshot_guardar_resultado.png)
-
----
-
-## 🚀 Ejecutar la Aplicación
-
-Para correr la aplicación:
+### 1. Ejecutar la app de Streamlit
 
 ```bash
 streamlit run app.py
 ```
 
-Esto abrirá una pestaña en tu navegador con la interfaz de usuario lista para usarse.
+(donde `app.py` es tu archivo con el código principal)
 
 ---
 
-## 👩‍💻 Autor
+## 🧠 ¿Cómo funciona la aplicación?
 
-**Ana Valeria Pérez Pérez**
-*Proyecto académico — Interfaces de Hardware y Software*
-
----
-=======
-# 🎚️ Procesamiento de Audio con Filtros Digitales
-
-**Interfaces de Hardware y Software — Proyecto de Interfaz HMI en Streamlit**
-
----
-
-## 📄 Descripción
-
-Este proyecto implementa un sistema de **procesamiento de señales de audio** mediante filtros digitales (pasa bajas, pasa altas y pasa banda).
-La interfaz gráfica fue desarrollada con **Streamlit** y permite:
-
-- Cargar archivos de audio `.wav`, `.mp3`, `.aac`
-- Aplicar filtros digitales configurables
-- Visualizar el audio en el **dominio del tiempo** y en el **dominio de la frecuencia (FFT)**
-- Exportar el resultado en diferentes formatos
+1. Se carga el modelo YOLOv8 preentrenado para detección de vehículos.
+2. Se inicializa un rastreador DeepSORT para hacer seguimiento de los objetos detectados.
+3. El usuario sube un video en formato `.mp4`, `.avi`, `.mov` o `.mkv`.
+4. Se puede seleccionar la clase que se desea rastrear: Car, Motorcycle, Truck, Bus, Bicycle.
+5. Se procesan los frames uno por uno:
+   - YOLOv8 detecta los vehículos.
+   - DeepSORT asigna IDs únicos y da seguimiento.
+6. Se muestra el video procesado en tiempo real en la app.
+7. Al finalizar, se puede **descargar el video** procesado.
 
 ---
 
-## ⚙️ Requisitos
+## 🔥 Ejemplo rápido de uso
 
-- Python 3.10 instalado
-
-### Instalación de dependencias:
-
-```bash
-pip install streamlit numpy matplotlib scipy soundfile pydub
-```
-
----
-
-## 🧠 Estructura del Código
-
-Archivo principal: `app.py`
-
-| Función | Descripción |
-|--------|-------------|
-| `leer_audio_general(file)` | Carga audio `.wav`, `.mp3`, `.aac` y lo convierte a array numpy mono |
-| `aplicar_filtro(data, fs, tipo, fc_low, fc_high, orden)` | Aplica filtro digital Butterworth según parámetros |
-| `aplicar_fft(data, fs)` | Calcula la FFT para visualización del espectro |
-| `st.line_chart()` | Muestra forma de onda |
-| `st.pyplot()` | Muestra el espectro de frecuencias |
-| `sf.write()` | Guarda audio filtrado |
-| `AudioSegment.export()` | Exporta en formato `.mp3`, `.aac` o `.wav` |
+1. Corre `streamlit run app.py`.
+2. Abre el navegador (normalmente se abre automático en `http://localhost:8501`).
+3. Sube un video.
+4. Selecciona la clase que quieres seguir (por ejemplo: **Car**).
+5. Espera a que termine el procesamiento.
+6. Descarga tu video con detecciones e IDs rastreados.
 
 ---
 
-## 🧪 Instrucciones de Uso
+## ⚠️ Notas importantes
 
-### Paso 1️⃣: Cargar audio
-
-- Selecciona un archivo de audio en formato `.wav`, `.mp3`, o `.aac`.
-- Se mostrará la forma de onda del audio cargado.
-
-![Paso 1 - Cargar audio](assets/Screenshot_cargar_audio.png)
-
----
-
-### Paso 2️⃣: Aplicar filtro
-
-- Elige un tipo de filtro:
-  - `Pasa-bajas`
-  - `Pasa-altas`
-  - `Pasa-banda`
-- Ajusta:
-  - Orden del filtro
-  - Frecuencia(s) de corte
-- Presiona **Aplicar filtro** para procesar el audio.
-
-![Paso 2 - Aplicar filtro](assets/Screenshot_aplicar_filtro.png)
+- Si tienes GPU con CUDA, el modelo YOLOv8 se usará automáticamente en GPU.
+- Puedes modificar el archivo para ajustar:
+  - El umbral de confianza (`confidence threshold`).
+  - Procesar todas las clases en vez de una sola.
+- Si tu video es muy pesado, el procesamiento puede tardar varios minutos.
 
 ---
 
-### 🔉 Visualización de Audio Filtrado
+## 📚 Referencias
 
-- Se reproducen el audio original y el filtrado.
-- Se visualizan ambas formas de onda para comparar.
-
-![Audio Filtrado - Formas de onda](assets/Screenshot_audio_filtrado.png)
+- [YOLOv8 - Ultralytics](https://docs.ultralytics.com/)
+- [Deep SORT - Realtime Tracker](https://github.com/levan92/deep_sort_realtime)
 
 ---
-
-### Paso 3️⃣: Transformada de Fourier (FFT)
-
-- Presiona el botón **Aplicar FFT**.
-- Se comparan los espectros de frecuencia (FFT) del audio original y filtrado.
-
-![Paso 3 - FFT](assets/Screenshot_fft.png)
-
----
-
-### 💾 Guardar Resultado
-
-- Selecciona el formato de exportación (`.wav`, `.mp3`, `.aac`).
-- Presiona el botón **Guardar Resultado**.
-- Finalmente, haz clic en **⬇️ Descargar archivo**.
-
-![Guardar Resultado](assets/Screenshot_guardar_resultado.png)
-
----
-
-## 🚀 Ejecutar la Aplicación
-
-Para correr la aplicación:
-
-```bash
-streamlit run app.py
-```
-
-Esto abrirá una pestaña en tu navegador con la interfaz de usuario lista para usarse.
-
----
-
-## 👩‍💻 Autor
-
-**Ana Valeria Pérez Pérez**
-*Proyecto académico — Interfaces de Hardware y Software*
-
----
->>>>>>> c6404e3ca0673e74ee88904a23c022c8edec4327
